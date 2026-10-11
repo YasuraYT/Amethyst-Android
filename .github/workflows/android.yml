@@ -14,7 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     env:
-      GPLAY_KEYSTORE_PASSWORD: ${{ secrets.GPLAY_KEYSTORE_PASSWORD }}
       CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
     steps:
       - name: Checkout
@@ -38,36 +37,6 @@ jobs:
           branch: buildjre8
           name: jre8-pojav
 
-      # - name: Get JRE17
-      #   uses: dawidd6/action-download-artifact@v9
-      #   with:
-      #     workflow: build.yml
-      #     path: app_pojavlauncher/src/main/assets/components/jre-new
-      #     workflow_conclusion: completed
-      #     repo: AngelAuraMC/angelauramc-openjdk-build
-      #     branch: buildjre17-21
-      #     name: jre17-pojav
-      #
-      # - name: Get JRE21
-      #   uses: dawidd6/action-download-artifact@v9
-      #   with:
-      #     workflow: build.yml
-      #     path: app_pojavlauncher/src/main/assets/components/jre-21
-      #     workflow_conclusion: completed
-      #     repo: AngelAuraMC/angelauramc-openjdk-build
-      #     branch: buildjre17-21
-      #     name: jre21-pojav
-      #
-      # - name: Get JRE25
-      #   uses: dawidd6/action-download-artifact@v9
-      #   with:
-      #     workflow: build.yml
-      #     path: app_pojavlauncher/src/main/assets/components/jre-25
-      #     workflow_conclusion: completed
-      #     repo: FCL-Team/Android-OpenJDK-Build
-      #     branch: Build_JRE_25
-      #     name: jre25-multiarch
-
       - uses: gradle/actions/setup-gradle@v4
         with:
           validate-wrappers: false
@@ -77,16 +46,6 @@ jobs:
         run: |
           ./scripts/languagelist_updater.sh
           mkdir out
-
-      - name: Build Release .apk
-        run: |
-          # Build the launcher
-          gradle :app_pojavlauncher:assembleRelease
-          mv app_pojavlauncher/build/outputs/apk/release/app_pojavlauncher-release.apk out/app-release.apk
-
-      - name: Gen md5sums
-        run: |
-          md5sum out/app-release.apk > out/app-release.md5
 
       - name: Build Debug .apk
         run: |
@@ -103,9 +62,3 @@ jobs:
         with:
           name: app-debug (recommended)
           path: out/app-debug.*
-
-      - name: Upload release APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release
-          path: out/app-release.*

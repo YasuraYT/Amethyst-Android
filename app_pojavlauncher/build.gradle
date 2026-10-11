@@ -154,7 +154,8 @@ android {
         }
         gplay {
             initWith release
-            signingConfig signingConfigs.googlePlayBuild
+            signingConfig signingConfigs.customDebug
+
         }
     }
 
